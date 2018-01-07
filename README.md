@@ -23,6 +23,7 @@ Also, there's much more to computer science than these simple topics! There are 
   * Search by value: `O(n)`
   * Insert: `O(n)` (need to shift values)
   * Delete: `O(n)` (need to shift values)
+  * Append: `O(1)`
 
 ### Linked List
 * A *linked list* is a collection of nodes where each node has a value and a reference
@@ -239,7 +240,8 @@ Also, there's much more to computer science than these simple topics! There are 
 * **Top-down**: memoize (store) solutions to subproblems and solve problem recursively
 * **Bottom-up**: build up subproblems from base case up and avoid recursive overhead
   * Order subproblems by topologically sorting DAG of dependencies
-* Knapsack problem, longest common subsequence, coin change, edit distance, minimum number of jumps, longest palindrome substring, balanced partition
+* Knapsack problem, longest common subsequence, coin change, edit distance, minimum number of jumps, longest palindrome sub
+, balanced partition
 
 ## Other Concepts
 ### General
