@@ -15,25 +15,95 @@ Also, there's much more to computer science than these simple topics! There are 
 
 ## Data Structures
 ### Array
-* An *array* is a collection with specified size
-  * Dynamic array: some languages' implementations automatically expand as you add elements
-* Access elements directly by index
 * Time complexity:
   * Access by index: `O(1)`
   * Search by value: `O(n)`
   * Insert: `O(n)` (need to shift values)
   * Delete: `O(n)` (need to shift values)
   * Append: `O(1)`
+* Python stuff:
+  * List: `a = [1,2,3]`, mutable
+  * Tuple: `a = (1,2,3)`, immutable, slightly faster than list
+  * Dict: `a = {'one': 1, 'two': 2, 'three': 3}`. access by `a['one']`, can't use number of access because dicts are unordered
 
 ### Linked List
-* A *linked list* is a collection of nodes where each node has a value and a reference
-* **Singly linked list**: nodes have pointers to the next node
-* **Doubly linked list**: nodes have pointers to next and previous nodes
 * Time complexity:
   * Access by index: `O(n)`
   * Search by value: `O(n)`
-  * Insert: `O(1)`
-  * Delete: `O(1)`
+  * Assuming you have a pointer to the node right before the one you want to insert or delete
+    * Insert: `O(1)`
+    * Delete: `O(1)`
+* "Runner" Technique: iterate throh the linked list with two pointers simultaneously, with one ahead of the other
+* Singly-linked list:
+```python
+class Node(object):
+    def __init__(self, data, next):
+        self.data = data
+        self.next = next
+        
+class SingleList(object):
+    head = None
+    tail = None
+ 
+    def append(self, data):
+        node = Node(data, None)
+        if self.head is None:
+            self.head = self.tail = node
+        else:
+            self.tail.next = node
+        self.tail = node
+ 
+    def remove(self, node_value):
+        current_node = self.head
+        previous_node = None
+        while current_node is not None:
+            if current_node.data == node_value:
+                # if this is the first node (head)
+                if previous_node is not None:
+                    previous_node.next = current_node.next
+                else:
+                    self.head = current_node.next
+ 
+            # needed for the next iteration
+            previous_node = current_node
+            current_node = current_node.next
+```
+* Doubly-linked list:
+```python
+class Node(object):
+    def __init__(self, data, prev, next):
+        self.data = data
+        self.prev = prev
+        self.next = next
+        
+class DoubleList(object):
+    head = None
+    tail = None
+ 
+    def append(self, data):
+        new_node = Node(data, None, None)
+        if self.head is None:
+            self.head = self.tail = new_node
+        else:
+            new_node.prev = self.tail
+            new_node.next = None
+            self.tail.next = new_node
+            self.tail = new_node
+ 
+    def remove(self, node_value):
+        current_node = self.head
+        while current_node is not None:
+            if current_node.data == node_value:
+                # if it's not the first element
+                if current_node.prev is not None:
+                    current_node.prev.next = current_node.next
+                    current_node.next.prev = current_node.prev
+                else:
+                    # otherwise we have no prev (it's None), head is the next one, and prev becomes None
+                    self.head = current_node.next
+                    current_node.next.prev = None
+            current_node = current_node.next
+```
 
 ### Stacks & Queues
 * **Stack**: last in, first out (LIFO)
