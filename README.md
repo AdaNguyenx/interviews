@@ -25,6 +25,11 @@ Also, there's much more to computer science than these simple topics! There are 
   * List: `a = [1,2,3]`, mutable
   * Tuple: `a = (1,2,3)`, immutable, slightly faster than list
   * Dict: `a = {'one': 1, 'two': 2, 'three': 3}`. access by `a['one']`, can't use number of access because dicts are unordered
+  * For loop:
+  ```python
+  for index, item in enumerate(items, start=0):   # default is zero
+    print(index, item)
+  ```
 
 ### Linked List
 * Time complexity:
