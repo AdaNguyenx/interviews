@@ -177,9 +177,11 @@ class DoubleList(object):
 * A *tree* is an undirected, connected, acyclic graph
   * Has `v` vertices and `v-1` edges
   * Degree: the number of edges incident to the vertex
-  * A **leaf** is a vertex of degree 1
+  * A **leaf** is a vertex of degree 1 (child, not parent)
   * One node is designated as the **root**
-  * A node's height is the length of its path to the root
+  * A node's **depth** is the length of its path to the root
+  * A node's **height** is the longest path to the furthest leaf
+  * Internal node: any node that has a child node 
 * A **forest** has multiple distinct trees (a disjoint union)
 * An **n-ary tree** has at most `n` children per node
 
@@ -190,13 +192,14 @@ class DoubleList(object):
 * **Complete**: every level, except possibly the last, is filled, and the last level's nodes are as far left as possible
   * Number of internal nodes: `floor(n/2)`
 * **Perfect**: a binary tree in which all interior nodes have two children and all leave have the same depth
-* **Balanced**: has the minimum possible maximum depth
+* **Balanced**: has the minimum possible maximum depth. two sibling subtrees do not differ in height by more than one level
   * Height is `ceil(lg(n+1))`
 * Traversals:
   * **Pre-order**: open current, visit left subtree, visit right subtree
   * **In-order**: visit left subtree, open current, visit right subtree (returns sorted list)
   * **Post-order**: visit left subtree, visit right subtree, open current
   * **Level-order**: breadth-first traversal, level by level
+  <img src = "images/tree-traversal.png">
 
 #### Binary Search Tree
 * A *binary search tree* is an ordered binary tree
@@ -208,13 +211,6 @@ class DoubleList(object):
   * If deleting a node with no children, just do it
   * If deleting a node with a single child, replace the node with its subtree
   * If deleting a node with two children, swap with minimum value in right subtree or maximum value in left subtree, then delete the node (which should now be a leaf)
-
-#### AVL Tree
-* An *AVL tree* is a self-balancing binary search tree
-* Pairs of subtrees differ in height by at most 1
-* Lookup, insertion, and deletion all take `O(log n)`, since height is at most `O(log n)`
-* Rotation balances the tree on update
-* Implement by adding a **balance factor** on each node (difference between subtree heights)
 
 #### Trie
 * A *trie* is a special tree that stores subsequences of values, also known as a prefix tree
