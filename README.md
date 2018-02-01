@@ -38,7 +38,7 @@ Also, there's much more to computer science than these simple topics! There are 
   * Assuming you have a pointer to the node right before the one you want to insert or delete
     * Insert: `O(1)`
     * Delete: `O(1)`
-* "Runner" Technique: iterate throh the linked list with two pointers simultaneously, with one ahead of the other
+* "Runner" Technique: iterate through the linked list with two pointers simultaneously, with one ahead of the other
 * Singly-linked list:
 ```python
 class Node(object):
@@ -113,18 +113,72 @@ class DoubleList(object):
 ### Stacks & Queues
 * **Stack**: last in, first out (LIFO)
   * Adding an element and popping the most recently added element are `O(1)` operations
+  ```python
+  class Stack:
+     def __init__(self):
+         self.items = []
+
+     def isEmpty(self):
+         return self.items == []
+
+     def push(self, item):
+         self.items.append(item)
+
+     def pop(self):
+         return self.items.pop()
+
+     def peek(self):
+         return self.items[len(self.items)-1]
+
+     def size(self):
+         return len(self.items)
+  ```
 * **Queue**: first in, first out (FIFO)
   * Adding an element and popping the oldest element are `O(1)` operations
+  ```python
+  class Queue:
+    def __init__(self):
+        self.items = []
+
+    def isEmpty(self):
+        return self.items == []
+
+    def enqueue(self, item):
+        self.items.insert(0,item)
+
+    def dequeue(self):
+        return self.items.pop()
+
+    def size(self):
+        return len(self.items)
+  ```
 * **Double-ended queue**: stack + queue combined
 * `push` adds elements & `pop` extracts elements
+
+### Hashing
+* A *hash function* is a function mapping an object to an integer such that if `a==b`, `H(a)==H(b)`
+* Universal hashing: a randomized way of drawing a hash function from some set of functions so that performance is good in expectation
+* Perfect hashing: has no collisions; usually only practical when the set of keys is roughly constant
+
+#### Hash Tables
+* A *hash table* is an array whose indices correspond to results from a hash function (implemented as a dictionary in Python)
+* Provides `O(1)` lookup, assuming load factor is small enough
+* **Load factor**: `n/k`, where `n` is number of entries and `k` is number of buckets
+* **Collision resolution**
+  * Separate Chaining (e.g. with linked lists)
+  * Open addressing (e.g. with linear probing, quadratic probing, or double hashing)
+   * When collision happens, use various methods to find the next empty cells
+   * Search: start at the place given by hash function and move forward until matching key is found. If reaching an empty cell, that means key is not in hash table.
+   * Deletion: When empty cell i, need to search forward until finding either another empty cell or a key (z) that can be moved to cell i (that is, a key whose hash value is equal to or earlier than i). Then when z is empty, continue to do the same until it terminates by reaching a cell that was already empty.
+* **Table doubling**: choose a new hash function to map to the new size and insert elements from old table into new table
+* **Simple uniform hashing assumption (SUHA)**: a hash function maps to any slot with equal probability
 
 ### Trees
 * A *tree* is an undirected, connected, acyclic graph
   * Has `v` vertices and `v-1` edges
-  * Any two vertices are connected by a unique path
+  * Degree: the number of edges incident to the vertex
   * A **leaf** is a vertex of degree 1
   * One node is designated as the **root**
-  * Each node has parent and/or children pointers
   * A node's height is the length of its path to the root
 * A **forest** has multiple distinct trees (a disjoint union)
 * An **n-ary tree** has at most `n` children per node
@@ -135,6 +189,7 @@ class DoubleList(object):
   * Number of nodes is at most `2^(h+1)-1`
 * **Complete**: every level, except possibly the last, is filled, and the last level's nodes are as far left as possible
   * Number of internal nodes: `floor(n/2)`
+* **Perfect**: a binary tree in which all interior nodes have two children and all leave have the same depth
 * **Balanced**: has the minimum possible maximum depth
   * Height is `ceil(lg(n+1))`
 * Traversals:
@@ -165,21 +220,6 @@ class DoubleList(object):
 * A *trie* is a special tree that stores subsequences of values, also known as a prefix tree
 * Each node's descendants share a common prefix given by the node
 * Useful for autocomplete
-
-### Hashing
-* A *hash function* is a function mapping an object to an integer such that if `a==b`, `H(a)==H(b)`
-* **Universal hashing**: a randomized way of drawing a hash function from some set of functions so that performance is good in expectation
-* **Perfect hashing**: has no collisions; usually only practical when the set of keys is roughly constant
-
-#### Hash Tables
-* A *hash table* is an array whose indices correspond to results from a hash function (implemented as a dictionary in Python)
-* Provides `O(1)` lookup, assuming load factor is small enough
-* **Load factor**: `n/k`, where `n` is number of entries and `k` is number of buckets
-* Collision resolution
-  * Chaining (e.g. with linked lists)
-  * Open addressing (e.g. with linear probing, quadratic probing, or double hashing)
-* **Table doubling**: choose a new hash function to map to the new size and insert elements from old table into new table
-* **Simple uniform hashing assumption (SUHA)**: a hash function maps to any slot with equal probability
 
 ### Heap
 * A *heap* is a special tree where nodes have higher (in the case of a min-heap) values than their parents
