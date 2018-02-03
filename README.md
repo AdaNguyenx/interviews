@@ -314,23 +314,73 @@ class Node(object):
             cnt += 1
         return cnt
 ```
+#### Red Black Tree
 
 #### Trie
 * A *trie* is a special tree that stores subsequences of values, also known as a prefix tree
 * Each node's descendants share a common prefix given by the node
 * Useful for autocomplete
+* The root is empty
+* Each node has 
+  * an array of R links/children, where R is the alphabet size
+    * can use array index to get specific reference to node: e.g. node.next[c] 
+  * a value, where null means that word does not exist
+* We refer to a trie for an R-character alphabet as an R-way trie
+* All methods below are recursive
+* Search: 
+  * Follow links corresponding to each character in the key.
+  * Search hit: node where search ends has a non-null value. Run time `O(L)` L is length of key
+  * Search miss: reach null link or node where search ends has null. Run time `O(log_R N)` N is number of keys
+value.
+* Insertion: Runtime `O(R + L)`
+  * Encounter a null link: create new node.
+  * Encounter the last character of the key: set value in that node.
+* Deletion: 
+  * Find the node corresponding to key and set value to null.
+  * If node has null value and *all* null links/children, remove that node (and
+recur).
 
 ### Heap
-* A *heap* is a special tree where nodes have higher (in the case of a min-heap) values than their parents
+* Implementation: 
+  * Indices start at 1
+  * Children of node k at locations 2*k and 2*k+1
+  * Parent of node k at k/2
+* Insertion: 
+  * Insert at the bottom at the rightmost spot
+  * Swapping the element with its parent until we find an appropriate spot for the element
+  * Max-heap:
+  ```python
+  # if k is larger than its parent, swap with parent
+  while k > k/2:
+     exchange(k, k/2)
+     k = k/2
+  ```
+  * Min-heap then do reverse
+* Remove the max/min:
+  * Swap the max/min with the last element in the heap (call it a)
+  * Swap a with one of its children if appropriate
+    * In max heap, swap with larger child. In min heap, swap with smaller child.
+  * Max-heap:
+  ```python
+  while (2*k < N):
+     j = 2*k
+     if (j < j + 1):
+       j += 1
+     if k < j:
+       break
+     exchange(k, j)
+     k = j
+  ```
 * Binary heap:
   * Heapify in `O(n)`
   * Find min in `O(1)`
   * Extract min, increase key, insert, delete in `O(log n)`
-  * Can implement as a list where a node at index `i` has children at `2i+1` and `2i+2` (0-indexed)
 
 ### Graph
 * A *graph* is a collection of nodes and edges and can be directed or undirected
-* **Cycle**: path that loops onto itself
+* Representation:
+  * Adjaccency list
+  * Adjacency Matrices
 * **Topological sort**: linear ordering of vertices such that directional constraints are preserved in a directed acyclic graph (DAG)
   * Generate using DFS by prepending to output list
 * **Spanning tree**: a tree that includes all nodes in the graph
@@ -339,7 +389,6 @@ class Node(object):
 * **Bipartite graph**: split into two groups A and B where there are no edges within each groups
 * **Clique**: a complete subgraph
 
-
 ## Algorithms
 ### Binary Search
 * Given a sorted list, start at the midpoint and divide and conquer
@@ -347,25 +396,65 @@ class Node(object):
 * `O(log n)`
 
 ### Sorting
-#### Insertion
-* Maintain a sorted sublist and insert new elements in it appropriately
-* Sorts in-place; stable
-* Best-case `O(n)`, average `O(n^2)`, worst `O(n^2)`
-
+Most common: merge, quick, bucket
 #### Bubble
-* On each pass through the array, compare adjacent pairs of elements and swap if necessary
+* Start at the beginning of the array, swap the first two elements if the first is greater than the second
+* Go to next pair, so on, continuously making sweeps of array until it is sorted
 * Sorts in-place; stable
 * Best-case `O(n)`, average `O(n^2)`, worst `O(n^2)`
+* Memory `O(1)`
+
+#### Insertion
+* Assume the first item is sorted
+* Find the next value to compare to the sorted value
+* Shift over any necessary elements to make space for value being added
+* Insert value into sorted subset, repeat steps 1-3
+* Sorts in-place; stable
+* Best-case `O(n)`, average `O(n^2)`, worst `O(n^2)`
+* Memory `O(1)`
 
 #### Selection
-* Exchange current element with smallest element to the right of the current element
+* Find the smallest element using a linear scan and move it to the front (swapping it with the front element)
+* Find the second smallest and move it, again doing a linear scan
+* Continue doing this until all elements are in place
 * Sorts in-place; unstable
 * Best-case `O(n^2)`, average `O(n^2)`, worst `O(n^2)`
+* Memory `O(1)`
 
 #### Merge
 * Recursively divide until sublists are size 1, then recursively merge the sublists
-* Requires `O(n)` space; stable
+* stable
 * Best-case `O(n log n)`, average `O(n log n)`, worst `O(n log n)`
+* Memory `O(n)`
+```python
+def merge(a, aux, lo, mid, hi):
+   # copy to aux array
+   for i in range(len(a)):
+      aux[i] = a[i]
+   
+   i = lo, j = mid + 1
+   for k in range(lo, hi):
+      if (i > mid):
+         a[k] = aux[j]
+         j += 1
+      elif (j > hi):
+         a[k] = aux[i]
+         i += 1
+      elif (aux[j] < aux[i]):
+         a[k] = aux[j]
+         j += 1
+      else:
+         a[k] = aux[i]
+         i += 1
+ 
+def sort(a, aux, lo, mid, hi):
+   if (hi <= lo) return
+   mid = lo + (hi - lo) / 2
+   sort(a, aux, lo, mid)
+   sort(a, aux, mid+1, hi)
+   merge(a, aux, lo, mid, hi)
+```
+<img src = "images/mergesort.png">
 
 #### Quick
 * Set some pivot element in the array; move elements smaller than pivot to its left and elements larger to the right
@@ -521,40 +610,8 @@ Inspiration from [here](https://quizlet.com/22436874/oop-vocabulary-object-orien
 * 503 Service Unavailable: server unable to handle the request (temporary)
 * 504 Gateway Timeout: server did not receive a timely response from upstream server
 
-#### Networking
-* [OSI Model](https://en.wikipedia.org/wiki/OSI_model)
-
 ### Recursion
 * [*Master theorem*](https://en.wikipedia.org/wiki/Master_theorem): is most work performed in the root node, in the leaves, or evenly distributed in the rows of the recursion tree?
-
-### Terminal Commands
-* Basic commands: `ls`, `cd`, `mkdir`,`touch`, `cp`, `mv`, `rm`, `pwd`, `chmod`, `chown`, `man`
-* `ping`: ping a server, used for network diagnostics
-* `ps`: display info about processes running on the system
-* `grep`: searches through files for lines matching a given regular expression
-* `tar`, `zip`, `unzip`: make and open compressed archives
-* `curl`: send requests to web servers
-* `wget`: download files from the web (can do recursively)
-* `dig`: query over DNS
-* `crontab`: use Cron to schedule recurring tasks
-
-### Git
-* `init`: creates/initializes `.git` folder in current directory
-* `clone`: clone repo into new directory
-* `pull`: fetch from another repo and integrate
-    * `git pull` is same as `git fetch` then `git merge FETCH_HEAD`
-* `add`: add files to index of contents for next commit
-* `rm`: remove files from working tree and index
-* `commit`: record changes to the repo, along with a commit message
-* `rebase`: transplant changes on one branch to another, edit commit history
-* `branch`: list, create, or delete branches
-* `checkout`: switch branches (or just get a version of specific files)
-* `status`: show the working tree's status
-* `diff`: show changes between commits or the working tree
-* `log`: show commit logs in a repo
-* `remote`: manage tracked remote repos
-* `reset`: reset current HEAD to a different state (can do `--hard` or `--soft`)
-* Also cool things like `bisect`, `fixup`
 
 ## Math
 
