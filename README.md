@@ -379,8 +379,9 @@ recur).
 ### Graph
 * A *graph* is a collection of nodes and edges and can be directed or undirected
 * Representation:
-  * Adjaccency list
+  * Adjacency list
   * Adjacency Matrices
+    * Symmetric if undirected graph
 * **Topological sort**: linear ordering of vertices such that directional constraints are preserved in a directed acyclic graph (DAG)
   * Generate using DFS by prepending to output list
 * **Spanning tree**: a tree that includes all nodes in the graph
@@ -394,6 +395,34 @@ recur).
 * Given a sorted list, start at the midpoint and divide and conquer
 * **Exponential search** is like binary search but in one direction (e.g. can be used in infinite sequence)
 * `O(log n)`
+```python
+# Find index of x in array a
+# Two differen methods
+def binarySearch(a, x):
+   low = 0
+   high = len(a) - 1
+   mid = 0
+   
+   while (low <= high):
+      mid = (low + high)/2
+      if (a[mid] < x):
+         low = mid + 1
+      elif (a[mid > x):
+         high = mid - 1
+      else:
+         return mid
+   
+   return -1 # can't find x
+
+def binarySearchRecursive(a, x, low, high):
+   mid = (low + high)/2
+   if (a[mid] < x):
+      return binarySearchRecursive(a, x, mid + 1, high)
+   elif (a[mid] > x):
+      return binarySearchRecursive(a, x, low, mid - 1)
+   else:
+      return mid
+```
 
 ### Sorting
 Most common: merge, quick, bucket
@@ -423,7 +452,7 @@ Most common: merge, quick, bucket
 
 #### Merge
 * Recursively divide until sublists are size 1, then recursively merge the sublists
-* stable
+* Not in-place; stable
 * Best-case `O(n log n)`, average `O(n log n)`, worst `O(n log n)`
 * Memory `O(n)`
 ```python
@@ -459,18 +488,70 @@ def sort(a, aux, lo, mid, hi):
 #### Quick
 * Set some pivot element in the array; move elements smaller than pivot to its left and elements larger to the right
   * Recursively sort left and right sublists
-* Requires `O(log n)` space; stable
+* Not in-place; stable
 * Best-case `O(n log n)`, average `O(n log n)`, worst `O(n^2)`
+* Memory `O(log n)` 
+```python
+def quickSort(arr, left, right):
+   int index = partition(arr, left, right)
+   # sort left half
+   if (left < index - 1):
+      quickSort(arr, left, index - 1)
+   # sort right half
+   if (index < right):
+      quickSort(arr, index, right)
+
+def partition(arr, left, right):
+   pivot = arr[(left + right)/2]
+   while (left <= right):
+      # Find element on left that should be on right
+      while (arr[left] < pivot):
+         left += 1
+      # Find element on right that should be on left
+      while (arr[right] > pivot):
+         right -= 1
+      # Swap elements, move left and right indices if the indices have not crossed
+      if (left <= right):
+         swap(arr, left, right)
+         left += 1
+         right -= 1
+   return left
+```
 
 #### Counting/Bucket
-* For lists whose elements' values are in a bounded, constant range
-* Not a comparison sort so best & average is `O(n+k)` and worst is `O(n^2)` (not bounded to `O(n log n)`)
-* Iterate through list and place items in buckets; can be stable
+* Only implemented for intergers, ideally with small range
+* Create a buckets with all values in the range, put counts of numbers in bucket
+* Not a comparison sort so best & average is `O(n+k)` and worst is `O(n^2)` (not bounded to `O(n log n)`), where k is the length of the alphabets
+* Not in-place; stable
+```python
+def sort(array, maxValue=None):
+  if maxValue is None:
+    maxValue = 0
+    for i in range(0, len(array)):
+      if array[i] > maxValue:
+        maxValue = array[i]
+
+  buckets = [0] * (maxValue + 1)
+  sortedIndex = 0
+
+  for i in range(0, len(array)):
+    buckets[array[i]] += 1
+
+  for i in range(0, len(buckets)):
+    while (buckets[i] > 0):
+      array[sortedIndex] = i
+      sortedIndex += 1
+      buckets[i] -= 1
+
+  return array
+```
 
 #### Radix
 * Apply a stable counting sort to every place value in a number
-* Sort places from least to most significant
-* Requires `O(n+k)` space; `O(d(n+k))` time
+* Can start from least significant digit (LSD) or most significant digit (MSD)
+* LSD is iterative, MSD is recursive
+* For LSD, needs to append 0's in front of smaller numbers so that the number of digits are all equal
+* Requires `O(n+k)` space; `O(d(n+k))` time, where k is the length of the alphabets and d is the keylength 
 * Also not a comparison sort
 
 ### Graph Search
@@ -871,78 +952,6 @@ public class Hello {
 * `Object` class at the top of the hierarchy
 
 Inspired by http://introcs.cs.princeton.edu/java/11cheatsheet/
-
-## Programming Languages
-* Low level vs high level
-* Compiled vs interpreted
-* Imperative vs declarative (and functional)
-* Statically typed vs dynamically typed
-* See [Comparison of programming languages](https://en.wikipedia.org/wiki/Comparison_of_programming_languages)
-
-### A Tiny Bit of C
-```C
-#include <stdio.h>
-int main()
-{
-   printf("Hello, World!");
-   return 0;
-}
-```
-
-### A Tiny Bit of C++
-```C++
-#include <iostream>
-using namespace std;
-
-class Hello {
-    std::string name;
-  public:
-    Hello (std::string newName) { name = newName; }
-    std::string hello () { return "Hello " + name; }
-};
-
-int main () {
-  Hello h ("world");
-  cout << h.hello();
-  return 0;
-}
-```
-
-### A Tiny Bit of Ruby
-```Ruby
-class HelloWorld
-   def initialize(name)
-      @name = name
-   end
-   def hello
-      puts "Hello #{@name}!"
-   end
-end
-
-h = HelloWorld.new("World")
-h.hello
-```
-
-### A Tiny Bit of Go
-```Go
-package main
-import "fmt"
-
-type hello struct {
-    name string
-}
-func (h hello) hello() string {
-    return "hello " + h.name
-}
-
-func main() {
-    h := hello{name: "world"}
-    fmt.Println(h.hello())
-}
-```
-* Go has built-in support for parallel programming with goroutines and channels
-* [How Goroutines Work](http://blog.nindalf.com/how-goroutines-work/)
-
 
 ## Problem-solving Strategies
 General categories of problems
